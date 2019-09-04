@@ -1,0 +1,26 @@
+allprojects { p ->
+  p.tasks.all { t ->
+    if (t.name == "compileKotlin") {
+      t.doFirst{
+        println("Classpath in " + t)
+        t.classpath.each { c ->
+          println("Classpath in " + t + " has " + c)
+        }
+        println("End of classpath in " + t)
+      }
+    }
+  }
+}
+
+if (project.hasProperty("disallowExecution")) {
+  gradle.taskGraph.whenReady {
+    gradle.taskGraph.afterTask { t ->
+      if (t.getDidWork()) {
+        println("Oops. Ran " + t)
+      } else {
+        println("Did not run " + t)
+      }
+    }
+  }
+}
+
